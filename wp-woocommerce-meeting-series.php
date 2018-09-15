@@ -76,7 +76,7 @@ function _wcms_product_meeting_dates_html( $post_id = '' ) {
   $date_format = 'g:i A \o\n l, F jS, Y';
   $meetings = rwmb_get_value( 'wcms_meeting-date', [], $post_id );
   if ( !empty($meetings) ) {
-    $html .= '<ol class=\'meeting-schedule\'>';
+    $html .= '<ol class="meeting-schedule">';
     foreach($meetings as $meeting) {
       $html .= '<li>';
       $html .= date( $date_format, $meeting );
@@ -103,7 +103,7 @@ function _wcms_product_venue_html( $post_id = '' ) {
       $title = $venue->name;
       $search_url = 'https://www.google.com/search?q=' . urlencode( $title . '+' . $address );
       $html .= '<h4><i class="fas fa-map-marker-alt"></i> Meeting Venue</h4>';
-      $html .= '<p><strong>' . $title . '</strong> at <a href="' . $search_url . '">' . $address . '</a></p>';
+      $html .= "<p><strong>{$title}</strong> at <a href=\"{$search_url}\">{$address}</a></p>";
     }
     $html .= '</div>';
   }
@@ -125,7 +125,7 @@ function _wcms_meeting_details_concise_html( $post_id = '' ) {
     foreach ($venues as $venue) {
       $venue_address = $venue->description;
       $venue_name = $venue->name;
-      $html .= '<br/><strong>Venue:</strong><br/><p>' . $venue_name . '</strong> — ' . $venue_address . '</p>';
+      $html .= "<br/><strong>Venue:</strong><br/><p>{$venue_name}</strong> — {$venue_address}</p>";
     }
   }
   return $html;
