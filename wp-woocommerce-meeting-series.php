@@ -40,10 +40,19 @@ if ( ! defined( 'ABSPATH' ) ) {
   exit; // Exit if accessed directly
 }
 
+function add_theme_scripts() {
+    $pluginURL = plugins_url("",__FILE__);
+    $CSSURL = "$pluginURL/woo-meeting-series.css";
+    wp_enqueue_style( 'woo-meeting-series', $CSSURL);
+}
+add_action( 'wp_enqueue_scripts', 'add_theme_scripts' );
+  
+
 /**
  * Require WooCommerce and metabox.io
  */
 require_once dirname( __FILE__ ) . '/tgm-required.php';
+
 
 /**
  *  ADD SCHEDULE AND VENUE INFORMATION TO THE PRODUCT PAGE
@@ -64,7 +73,7 @@ add_action( 'woocommerce_before_add_to_cart_button', 'wcms_output_product_detail
 // returns product schedule
 function _wcms_product_schedule_html( $post_id = '' ) {
   $html = '';
-  $html .= '<div class="product-schedule-wrapper"><h4><span class="fas fa-clipboard-list"></span> Meeting Schedule</h4>';
+  $html .= '<div class="meeting-schedule-wrapper"><h4><span class="fas fa-clipboard-list"></span> Meeting Schedule</h4>';
   $html .= _wcms_product_meeting_dates_html( $post_id );
   $html .= "</div>";
   return $html;
@@ -97,7 +106,7 @@ function _wcms_product_venue_html( $post_id = '' ) {
   $venues = wp_get_post_terms( $post_id, 'meeting_venue', $args );
   $html = '';
     if ( count($venues) ) {
-    $html .= '<div class="product-venue-wrapper">';
+    $html .= '<div class="meeting-venue-wrapper">';
       foreach  ($venues as $venue) {
       $address = $venue->description;
       $title = $venue->name;
@@ -243,7 +252,7 @@ function wcms_output_product_description() {
   $post = $sourcepost;
   setup_postdata( $post );
 
-  echo '<div class="product-sourcepost-wrapper">';
+  echo '<div class="meeting-description-wrapper">';
   echo "<h1>" . get_the_title() . " : {$product_title}</h1>";
   get_template_part( 'content', 'page' );
   echo '</div>';
