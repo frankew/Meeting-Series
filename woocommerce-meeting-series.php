@@ -60,7 +60,7 @@ require_once dirname( __FILE__ ) . '/tgm-required.php';
 */
 
 // Output details before product meta area
-function wcms_output_product_details() {
+function wcms_output_product_details( $post_id = '') {
   global $post;
   if ('' == $post_id) {
     $post_id = $post->ID;
@@ -250,7 +250,7 @@ function wcms_output_meeting_description_page() {
   $meeting_description_page_id = rwmb_get_value( $field_id );
   $meeting_description_page = get_post( $meeting_description_page_id );
   $stock_classes =  ['instock', 'outofstock'];
-  $final_classes = array_intersect( get_post_class(), $stock_classes );s
+  $final_classes = array_intersect( get_post_class(), $stock_classes );
   $final_classes[] = 'meeting-description-wrapper';
   $post = $meeting_description_page;
   
@@ -407,7 +407,7 @@ function wcms_availabilty_label( $availability, $_product ) {
   global $product;
   
   if ( $_product->is_in_stock() ) {
-    $stock = $product->get_total_stock();
+    $stock = $product->get_stock_quantity();
     if ($stock == 1) {
       $availability['availability'] = __($stock . ' Space Left!', 'woocommerce');
     } else {
