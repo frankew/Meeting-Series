@@ -1,0 +1,73 @@
+
+
+ol.meeting-schedule {
+	list-style: circle;
+	margin: 0;
+  line-height: 1.1;
+}
+
+ol.meeting-schedule li:not(:last-child) { margin-bottom: 1ex; }
+ol.meeting-schedule li::before, 
+ol.meeting-schedule li::after { display: none !important; }
+
+
+ /* The meeting details are wrapped .wc-item-meta where they are included as a line item on the order form */
+.wc-item-meta {
+	page-break-inside: avoid;
+  border: thin dotted;
+	border-radius: 1ex;
+	padding: 1ex 1em;
+	font-size: 1em;
+	margin-top: 1em;
+}
+.wc-item-meta  .meeting-schedule {
+  list-style-position: inside;
+  margin-bottom: 1em;
+}
+.wc-item-meta  .wc-item-meta-label { display: none; }
+
+ /* Print styles for the order received page to create a reasonable printed invoice */
+@media print {
+  .woocommerce-order-received .site-header,
+  .woocommerce-order-received .entry-header,
+  .woocommerce-order-received .site-footer,
+  .woocommerce-order-received .woocommerce-thankyou-order-received, 
+  .woocommerce-order-received .woocommerce-order-details__title,
+  .woocommerce-order-received .woocommerce-column__title,
+  .woocommerce-order-received li::before,
+  .woocommerce-order-received li::after {
+    display: none !important;
+    color: #444;
+  }
+  .woocommerce-thankyou-order-details + p {
+    margin: 1ex;
+  }
+  .woocommerce-order-received ul.order_details li {
+    padding: 2px !important;
+  }
+  .woocommerce-order-received ul.order_details li strong {
+    display: inline;
+    padding: 0 1rem !important;
+  }
+  .woocommerce-order-received h2 {
+    font-weight: bold !important;
+    font-size: 1em !important;
+    margin: 1em 0 0;
+  }
+   body.custom-background, 
+  .site-content, 
+  .woocommerce-order-received table th {
+		background: initial !important;
+		background-color: transparent !important;
+	}
+  .woocommerce-order-received ul.order_details, 
+  .woocommerce-order-received .hentry,
+  .woocommerce-order-received .site-main,
+  .woocommerce-order-received .content-area {
+		margin: 0;
+	}
+  .woocommerce-order-received table td, 
+  .woocommerce-order-received table th {
+		padding: 0 !important;
+	}
+}
