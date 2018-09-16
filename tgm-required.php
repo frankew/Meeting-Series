@@ -44,11 +44,10 @@ function pbc_register_required_plugins() {
 	 */
 	$plugins = array(
 
-		// This is an example of how to include a plugin from the WordPress Plugin Repository.
 		array(
 			'name'      => 'WooCommerce',
 			'slug'      => 'woocommerce',
-			'required'  => false,
+			'required'  => true,
 		),
 		array(
 			'name'     => 'Meta Box',

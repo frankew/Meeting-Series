@@ -219,7 +219,6 @@ function wcms_create_product_schedule_metaboxes( $meta_boxes ) {
 				'sort_clone' => 'true',
         'add_button' => esc_html__( 'Add Meeting', 'wcmstextdomain' ),
         'timestamp'  => true,
-          // Datetime picker options.
           // For date options, see here http://api.jqueryui.com/datepicker
           // For time options, see here http://trentrichardson.com/examples/timepicker/
           'js_options' => array(
@@ -256,8 +255,13 @@ function wcms_output_meeting_description_page() {
   
   echo '<div class="' . implode(' ', $final_classes) . '">';
   setup_postdata( $post );
-    echo "<h1>" . get_the_title() . " : {$product_title}</h1>";
-    get_template_part( 'content', 'page' );
+    echo "<h2><strong>" . get_the_title() . "</strong>: {$product_title}</h2>";
+    // get_template_part( 'content', 'page' );
+    echo "<aside class=\"" . implode( ' ', get_post_class('', $meeting_description_page_id)) . "\">";
+    echo "<div class=\"entry-content\">";
+    echo the_content();
+    echo "</div>";
+    echo "</aside>";
   wp_reset_postdata();
   echo '</div>';
 }
@@ -326,7 +330,7 @@ function wcms_edit_meeting_description_page_link() {
 // Rename woocommerce "Product" to "Series"
 function wcms_rename_woocommerce_products_to_classes( $args ){
   $labels = array(
-    'name'               => __( 'All Meeting Series', 'wcmstextdomain' ),
+    'name'               => __( 'Meeting Series', 'wcmstextdomain' ),
     'singular_name'      => __( 'Meeting Series', 'wcmstextdomain' ),
     'menu_name'          => __( 'Meeting Series', 'Admin menu name', 'wcmstextdomain' ),
     'add_new'            => __( 'New Series', 'wcmstextdomain' ),

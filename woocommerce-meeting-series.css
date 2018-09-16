@@ -2,7 +2,6 @@
 
 ol.meeting-schedule {
 	list-style: circle;
-	margin: 0;
   line-height: 1.1;
 }
 
@@ -18,7 +17,9 @@ ol.meeting-schedule li::after { display: none !important; }
 	border-radius: 1ex;
 	padding: 1ex 1em;
 	font-size: 1em;
-	margin-top: 1em;
+  margin-top: 1em;
+  margin-right: 1em;
+  margin-bottom: 1em;
 }
 .wc-item-meta  .meeting-schedule {
   list-style-position: inside;
