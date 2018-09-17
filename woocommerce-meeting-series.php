@@ -107,12 +107,17 @@ function _wcms_product_venue_html( $post_id = '' ) {
   $html = '';
     if ( count($venues) ) {
     $html .= '<div class="meeting-venue-wrapper">';
-      foreach  ($venues as $venue) {
+    foreach  ($venues as $venue) {
       $address = $venue->description;
       $title = $venue->name;
-      $search_url = 'https://www.google.com/search?q=' . urlencode( $title . '+' . $address );
       $html .= '<h4><i class="fas fa-map-marker-alt"></i> Meeting Venue</h4>';
-      $html .= "<p><strong>{$title}</strong> at <a href=\"{$search_url}\">{$address}</a></p>";
+      if ( !empty( $address ) ) {
+        $search_url = 'https://www.google.com/search?q=' . urlencode( $title . '+' . $address );
+        $html .= "<p><strong>{$title}</strong> at <a href=\"{$search_url}\">{$address}</a></p>";
+      } else {
+        $search_url = 'https://www.google.com/search?q=' . urlencode( $title );
+        $html .= "<p><a href=\"{$search_url}\"><strong>{$title}</strong></a></p>";
+      }
     }
     $html .= '</div>';
   }
@@ -241,23 +246,23 @@ add_filter( 'rwmb_meta_boxes', 'wcms_create_product_schedule_metaboxes', 999 );
  * 
 */
 
-// Insert the content of meeting_description_page before the product description on the product page
-function wcms_output_meeting_description_page() {
+// Insert the content of meeting_subject_page before the product description on the product page
+function wcms_output_meeting_subject_page() {
   global $post;
   $product_title = get_the_title();
-  $field_id = 'wcms_meeting_description_page';
-  $meeting_description_page_id = rwmb_get_value( $field_id );
-  $meeting_description_page = get_post( $meeting_description_page_id );
+  $field_id = 'wcms_meeting_subject_page';
+  $meeting_subject_post_id = rwmb_get_value( $field_id );
+  $meeting_subject_page = get_post( $meeting_subject_post_id );
   $stock_classes =  ['instock', 'outofstock'];
   $final_classes = array_intersect( get_post_class(), $stock_classes );
   $final_classes[] = 'meeting-description-wrapper';
-  $post = $meeting_description_page;
+  $post = $meeting_subject_page;
   
   echo '<div class="' . implode(' ', $final_classes) . '">';
   setup_postdata( $post );
     echo "<h2><strong>" . get_the_title() . "</strong>: {$product_title}</h2>";
     // get_template_part( 'content', 'page' );
-    echo "<aside class=\"" . implode( ' ', get_post_class('', $meeting_description_page_id)) . "\">";
+    echo "<aside class=\"" . implode( ' ', get_post_class('', $meeting_subject_post_id)) . "\">";
     echo "<div class=\"entry-content\">";
     echo the_content();
     echo "</div>";
@@ -265,60 +270,57 @@ function wcms_output_meeting_description_page() {
   wp_reset_postdata();
   echo '</div>';
 }
-add_action( 'woocommerce_before_single_product', 'wcms_output_meeting_description_page', 10 );
+add_action( 'woocommerce_before_single_product', 'wcms_output_meeting_subject_page', 10 );
 
-// Create the product -> meeting_description_page relationship and metaboxes
-function wcms_create_product_meeting_description_page_metaboxes( $meta_boxes ) {
-  $meeting_description_page_field_id = 'wcms_meeting_description_page';
-  $meeting_description_page_link_field_id = 'wcms_meeting_description_page_link';
+// Create the product -> meeting_subject_page relationship and metaboxes
+function wcms_create_product_meeting_subject_metaboxes( $meta_boxes ) {
+  $meeting_subject_field_id = 'wcms_meeting_subject_page';
+  $meeting_subject_link_field_id = 'wcms_meeting_subject_link';
   $meta_boxes[] = array(
-		'id' => 'meeting_description_page',
-		'title' => esc_html__( 'Meeting Series Description', 'pbtextdomain' ),
+		'id' => 'meeting_subject_page',
+		'title' => esc_html__( 'Meeting Series Subject', 'pbtextdomain' ),
 		'post_types' => array( 'product' ),
 		'context' => 'after_title',
 		'priority' => 'default',
 		'autosave' => 'false',
 		'fields' => array(
 			array(
-				'id' => $meeting_description_page_field_id,
+				'id' => $meeting_subject_field_id,
 				'type' => 'post',
-        'name' => esc_html__( 'Description Page', 'pbtextdomain' ),
-        'desc' => esc_html__( 'Choose a page that describes the material covered in this series.', 'pbtextdomain' ),
+        'name' => esc_html__( 'Meeting Series Subject', 'pbtextdomain' ),
+        'desc' => esc_html__( 'Choose a page that describes the material covered in these meetings.', 'pbtextdomain' ),
 				'post_type' => 'page',
 				'field_type' => 'select_advanced',
       ),
       array(
-        'name' => esc_html__( 'Edit Desciption Page', 'pbtextdomain' ),
-        'id'       => $meeting_description_page_link_field_id,
+        'name' => esc_html__( 'Edit Subject Page', 'pbtextdomain' ),
+        'id'       => $meeting_subject_link_field_id,
         'type'     => 'custom_html',
-        'callback' => 'wcms_edit_meeting_description_page_link',
+        'callback' => 'wcms_edit_meeting_subject_link',
       )
     ),
-    'validation' => array(
-      'rules'  => array(
-        $meeting_description_page_field_id => array(
-              'required'  => true,
-        ),
-        // Rules for other fields
-      ),
-    )
   );
 	return $meta_boxes;
 }
-add_filter( 'rwmb_meta_boxes', 'wcms_create_product_meeting_description_page_metaboxes' );
+add_filter( 'rwmb_meta_boxes', 'wcms_create_product_meeting_subject_metaboxes' );
 
-// Create link on the product admin page to edit the meeting_description_page
-function wcms_edit_meeting_description_page_link() {
-  $meeting_description_page_field_id = 'wcms_meeting_description_page';
+// Create link on the product admin page to edit the meeting_subject_page
+function wcms_edit_meeting_subject_link() {
+  $meeting_subject_field_id = 'wcms_meeting_subject_page';
     if ( ! $post_being_edited_id = filter_input( INPUT_GET, 'post', FILTER_SANITIZE_NUMBER_INT ) ) {
      return '';
   }
   $post_being_edited = get_post($post_being_edited_id);
-  $meeting_description_page_id = rwmb_get_value($meeting_description_page_field_id, '', $post_being_edited_id);
-  $meeting_description_page = get_post($meeting_description_page_id);
-  $meeting_description_page_title = $meeting_description_page->post_title;
-  $meeting_description_page_edit_url = get_edit_post_link($meeting_description_page_id);
-  $html = "<a class=\"button\" href=\"{$meeting_description_page_edit_url}\">Edit &ldquo;{$meeting_description_page_title}&rdquo;</a>";
+  $meeting_subject_post_id = rwmb_get_value($meeting_subject_field_id, '', $post_being_edited_id);
+  if ( empty( $meeting_subject_post_id ) ) {
+    return 'No subject page selected.';
+  }
+  $meeting_subject_page = get_post($meeting_subject_post_id);
+  $meeting_subject_title = $meeting_subject_page->post_title;
+  $meeting_subject_edit_url = get_edit_post_link($meeting_subject_post_id);
+  $html = "<u><a href=\"{$meeting_subject_edit_url}\">Edit &ldquo;{$meeting_subject_title}&rdquo;</a></u>";
+  $html .=  "<br/>Use your back button to return here after saving changes to the subject page.";
+
   return $html;
 }
 
