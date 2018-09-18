@@ -107,10 +107,10 @@ function _wcms_product_venue_html( $post_id = '' ) {
   $html = '';
     if ( count($venues) ) {
     $html .= '<div class="meeting-venue-wrapper">';
+    $html .= '<h4><i class="fas fa-map-marker-alt"></i> Meeting Venue</h4>';
     foreach  ($venues as $venue) {
-      $address = $venue->description;
       $title = $venue->name;
-      $html .= '<h4><i class="fas fa-map-marker-alt"></i> Meeting Venue</h4>';
+      $address = $venue->description;
       if ( !empty( $address ) ) {
         $search_url = 'https://www.google.com/search?q=' . urlencode( $title . '+' . $address );
         $html .= "<p><strong>{$title}</strong> at <a href=\"{$search_url}\">{$address}</a></p>";
