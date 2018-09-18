@@ -139,7 +139,7 @@ function _wcms_meeting_details_concise_html( $post_id = '' ) {
     foreach ($venues as $venue) {
       $venue_address = $venue->description;
       $venue_name = $venue->name;
-      $html .= "<br/><strong>Venue:</strong><br/><p>{$venue_name}</strong> — {$venue_address}</p>";
+      $html .= "<strong>Venue:</strong><br/><p>{$venue_name}</strong> — {$venue_address}</p>";
     }
   }
   return $html;
