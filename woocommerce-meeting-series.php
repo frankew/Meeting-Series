@@ -68,7 +68,7 @@ function wcms_output_product_details( $post_id = '') {
   echo _wcms_product_schedule_html( $post_id );
   echo _wcms_product_venue_html( $post_id );
 }
-add_action( 'woocommerce_before_add_to_cart_button', 'wcms_output_product_details', 10 );
+add_action( 'woocommerce_before_add_to_cart_button', 'wcms_output_product_details', 0 );
 
 // returns product schedule
 function _wcms_product_schedule_html( $post_id = '' ) {
@@ -252,23 +252,24 @@ function wcms_output_meeting_subject_page() {
   $product_title = get_the_title();
   $field_id = 'wcms_meeting_subject_page';
   $meeting_subject_post_id = rwmb_get_value( $field_id );
-  $meeting_subject_page = get_post( $meeting_subject_post_id );
-  $stock_classes =  ['instock', 'outofstock'];
-  $final_classes = array_intersect( get_post_class(), $stock_classes );
-  $final_classes[] = 'meeting-description-wrapper';
-  $post = $meeting_subject_page;
-  
-  echo '<div class="' . implode(' ', $final_classes) . '">';
-  setup_postdata( $post );
-    echo "<h2><strong>" . get_the_title() . "</strong>: {$product_title}</h2>";
-    // get_template_part( 'content', 'page' );
-    echo "<aside class=\"" . implode( ' ', get_post_class('', $meeting_subject_post_id)) . "\">";
-    echo "<div class=\"entry-content\">";
-    echo the_content();
-    echo "</div>";
-    echo "</aside>";
-  wp_reset_postdata();
-  echo '</div>';
+  if ( !empty( $meeting_subject_post_id ) ) {
+    $meeting_subject_page = get_post( $meeting_subject_post_id );
+    $stock_classes =  ['instock', 'outofstock'];
+    $final_classes = array_intersect( get_post_class(), $stock_classes );
+    $final_classes[] = 'meeting-subject-wrapper';
+    $post = $meeting_subject_page;
+    echo '<div class="' . implode(' ', $final_classes) . '">';
+    setup_postdata( $post );
+      echo "<h2><strong>" . get_the_title() . "</strong>: {$product_title}</h2>";
+      // get_template_part( 'content', 'page' );
+      echo "<aside class=\"" . implode( ' ', get_post_class('', $meeting_subject_post_id)) . "\">";
+      echo "<div class=\"entry-content\">";
+      echo the_content();
+      echo "</div>";
+      echo "</aside>";
+    wp_reset_postdata();
+    echo '</div>';
+  }
 }
 add_action( 'woocommerce_before_single_product', 'wcms_output_meeting_subject_page', 10 );
 

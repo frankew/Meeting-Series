@@ -1,10 +1,13 @@
-
+.meeting-subject-wrapper {
+  margin-bottom: 2em; 
+}
 
 ol.meeting-schedule {
 	list-style: circle;
   line-height: 1.1;
 }
 
+/* Woocommerce is crazy with :pseudo-elements */
 ol.meeting-schedule li:not(:last-child) { margin-bottom: 1ex; }
 ol.meeting-schedule li::before, 
 ol.meeting-schedule li::after { display: none !important; }
