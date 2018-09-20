@@ -1,12 +1,17 @@
-## A WordPress plug-in that turns WooCommerce into a machine that sells registrations for meetings, classes, or sessions. It includes minimal styles and should work with any theme.
+## A plug-in that turns WordPress and WooCommerce into a machine that sells registrations for meetings, classes, or sessions.
 
 Source on Bitbucket | Download
 
-This plugin is opinionated and broad in scope. When activated, it assumes the site will be used only for selling registrations to meeting series. Broadly, changes made by the plugin fit into the following 
+The plugin makes use of using standard WooCommerce and WordPress hooks, actions, and filters. It is opinionated, lightweight, and it should work with any theme.
 
-*   Adds “Meeting Dates” and “Meeting Venues” in the admin and front-end.
-*   Renames and removes certain features in WooComerce. Changes buttons, labels, and text on the front-end of the site to provide a consistent user experience.
-*   Adds fields in the editor to choose a post that describes the meeting series. Insert this description at the top of the page on the front-end. (This makes it easy to host multiple meetings that cover the same shared subject matter.)
+<h2>Features</h2>
+
+Meeting Series for WooCommerce is opinionated. It assumes the site will be used only for selling registrations to meeting series. Though it is broad in scope, changes made by the plugin fall into four groups:
+
+- Adds “Meeting Dates” and “Meeting Venues” in the admin and front-end.
+- Adds fields in the editor to choose a "Meeting Series Subject"; another static page on your site that describes the meeting series. (This makes it easy to host multiple meetings that cover the same shared subject matter.) This description is inserted at the top of the page on the front-end. 
+- Renames and removes certain features in WooComerce. Changes buttons, labels, and text on the front-end of the site to provide a consistent user experience.
+- Provides print styles for printing the registration confirmation page as an invoice. 
 
 Specifically, the plugin makes the following changes:  
 
@@ -24,7 +29,7 @@ Specifically, the plugin makes the following changes:
  - Change product availability labels to “__ Space(s) Left” or “Sold Out :(”
  - Change order received text to “We have sent the registration details and receipt to your email, or you can print this page.”
  - Add print CSS for the Order Confimation Page to facilitate a tidy printed invoice.
- 
+
 The plugin depends on WooCommerce and [metabox.io](https://metabox.io).  The plugin is open source and [free of copyright or -left encumberment](https://unlicense.org). Suggestions and contributions encouraged.
 
 If you want to style the output, you can use the following selectors:
