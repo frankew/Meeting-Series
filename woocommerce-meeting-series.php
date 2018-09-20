@@ -40,6 +40,9 @@ if ( ! defined( 'ABSPATH' ) ) {
   exit; // Exit if accessed directly
 }
 
+define('WOOCOMMERCE_PRODUCT', 'product');
+define('PRODUCT_FILTER_NAME', 'wcms_filter_product');
+
 function add_theme_scripts() {
     $pluginURL = plugins_url("",__FILE__);
     $CSSURL = "$pluginURL/woocommerce-meeting-series.css";
@@ -75,6 +78,7 @@ function _wcms_product_schedule_html( $post_id = '' ) {
   $html = '';
   $html .= '<div class="meeting-schedule-wrapper"><h4><span class="fas fa-clipboard-list"></span> Meeting Schedule</h4>';
   $html .= _wcms_meeting_dates_html( $post_id );
+  $html .= _wcms_meeting_duration_html( $post_id );
   $html .= "</div>";
   return $html;
 }
@@ -82,7 +86,7 @@ function _wcms_product_schedule_html( $post_id = '' ) {
 // returns an <ol> with the meetings in a friendly date format
 function _wcms_meeting_dates_html( $post_id = '' ) {
   $html = '';
-  $date_format = 'g:i A \o\n l, F jS, Y';
+  $date_format = 'l, F jS, Y \a\t g:i a';
   $meetings = rwmb_get_value( 'wcms_meeting-date', [], $post_id );
   if ( !empty($meetings) ) {
     $html .= '<ol class="meeting-schedule">';
@@ -92,6 +96,17 @@ function _wcms_meeting_dates_html( $post_id = '' ) {
       $html .= '</li>';
     }
     $html .= '</ol>';
+    $html .= _wcms_meeting_duration_html( $post_id );
+  }
+  return $html;
+}
+
+// returns an <ol> with the meetings in a friendly date format
+function _wcms_meeting_duration_html( $post_id = '' ) {
+  $html = '';
+  $meeting_duration = rwmb_get_value( 'wcms_meeting-duration', [], $post_id );
+  if ( !empty($meeting_duration) ) {
+    $html .= "<p class=\"meeting-duration\">{$meeting_duration}</p>";
   }
   return $html;
 }
@@ -200,23 +215,22 @@ function wcms_create_product_venue_tax() {
 		'show_in_quick_edit' => true,
 		'show_admin_column' => true,
 	);
-	register_taxonomy( 'meeting_venue', array('product', ), $args );
+	register_taxonomy( 'meeting_venue', array(WOOCOMMERCE_PRODUCT, ), $args );
 }
 add_action( 'init', 'wcms_create_product_venue_tax' );
 
 // Add metaboxes for meeting dates to products
 function wcms_create_product_schedule_metaboxes( $meta_boxes ) {
-	$prefix = 'wcms_';
 	$meta_boxes[] = array(
 		'id' => 'schedule',
 		'title' => esc_html__( 'Meeting Schedule', 'wcmstextdomain' ),
-		'post_types' => array('product' ),
-	    'context' => 'after_editor',
-	    'priority' => 'low',
+		'post_types' => array(WOOCOMMERCE_PRODUCT ),
+    'context' => 'after_title',
+    // 'priority' => 'high',
 		'autosave' => 'true',
 		'fields' => array(
       array(
-        'id' => $prefix . 'meeting-date',
+        'id' => 'wcms_meeting-date',
 				'type' => 'datetime',
         'name' => esc_html__( 'Dates and Starting Times', 'wcmstextdomain' ),
         'desc' => 'Add an entry for each time this series meets. Drag and Drop to reorder.',
@@ -229,17 +243,25 @@ function wcms_create_product_schedule_metaboxes( $meta_boxes ) {
           'js_options' => array(
               'stepMinute'      => 5,
               'showTimepicker'  => true,
+              'changeYear'     => true,
+              'changeMonth'     => true,
               'timeFormat'      => 'h:mm tt',
-              'showButtonPanel' => false,
+              // 'showButtonPanel' => false,
               'oneLine'         => true,
               'timeText'    => 'Start Time:',
           ),
+      ),
+      array(
+				'id' => 'wcms_meeting-duration',
+				'type' => 'textarea',
+				'name' => esc_html__( 'Meeting Duration', 'wcmstextdomain' ),
+				'placeholder' => esc_html__( 'e.g., “Each meeting is 2.5 hours” or “We have four ninety-minute sessions with a break for lunch. We finish up around 5pm each day.”', 'wcmstextdomain' ),
 			),
 		),
 	);
 	return $meta_boxes;
 }
-add_filter( 'rwmb_meta_boxes', 'wcms_create_product_schedule_metaboxes', 999 );
+add_filter( 'rwmb_meta_boxes', 'wcms_create_product_schedule_metaboxes' );
 
 /**
  * ADD PRODUCT MEETING DESCRIPTION METABOXES
@@ -261,7 +283,6 @@ function wcms_output_meeting_subject_page() {
     echo '<div class="' . implode(' ', $final_classes) . '">';
     setup_postdata( $post );
       echo "<h2><strong>" . get_the_title() . "</strong>: {$product_title}</h2>";
-      // get_template_part( 'content', 'page' );
       echo "<aside class=\"" . implode( ' ', get_post_class('', $meeting_subject_post_id)) . "\">";
       echo "<div class=\"entry-content\">";
       echo the_content();
@@ -274,15 +295,15 @@ function wcms_output_meeting_subject_page() {
 add_action( 'woocommerce_before_single_product', 'wcms_output_meeting_subject_page', 10 );
 
 // Create the product -> meeting_subject_page relationship and metaboxes
-function wcms_create_product_meeting_subject_metaboxes( $meta_boxes ) {
+function wcms_create_meeting_subject_metaboxes( $meta_boxes ) {
   $meeting_subject_field_id = 'wcms_meeting_subject_page';
   $meeting_subject_link_field_id = 'wcms_meeting_subject_link';
   $meta_boxes[] = array(
 		'id' => 'meeting_subject_page',
 		'title' => esc_html__( 'Meeting Series Subject', 'pbtextdomain' ),
-		'post_types' => array( 'product' ),
+		'post_types' => array( WOOCOMMERCE_PRODUCT ),
 		'context' => 'after_title',
-		'priority' => 'default',
+		// 'priority' => 'high',
 		'autosave' => 'false',
 		'fields' => array(
 			array(
@@ -303,7 +324,7 @@ function wcms_create_product_meeting_subject_metaboxes( $meta_boxes ) {
   );
 	return $meta_boxes;
 }
-add_filter( 'rwmb_meta_boxes', 'wcms_create_product_meeting_subject_metaboxes' );
+add_filter( 'rwmb_meta_boxes', 'wcms_create_meeting_subject_metaboxes' );
 
 // Create link on the product admin page to edit the meeting_subject_page
 function wcms_edit_meeting_subject_link() {
@@ -385,6 +406,16 @@ function wcms_add_to_cart_label() {
 }
 add_filter( 'woocommerce_product_single_add_to_cart_text', 'wcms_add_to_cart_label' );
 
+function wcms_title_placeholder($title , $post){
+  if( $post->post_type == WOOCOMMERCE_PRODUCT ){
+    $my_title = "Series name";
+    return $my_title;
+  }
+  return $title;
+}
+add_filter('enter_title_here', 'wcms_title_placeholder' , 20 , 2 );
+
+
 // Replaces the add to cart button in the product loop with one that links
 // to the product page instead of adding the item to the car. 
 // Labels: "Details and Registration" or "Sold Out :(""
@@ -416,13 +447,13 @@ function wcms_availabilty_label( $availability, $_product ) {
   if ( $_product->is_in_stock() ) {
     $stock = $product->get_stock_quantity();
     if ($stock == 1) {
-      $availability['availability'] = __($stock . ' Space Left!', 'woocommerce');
+      $availability['availability'] = __($stock . ' Space Left!', 'wcmstextdomain');
     } else {
-      $availability['availability'] = __($stock . ' Spaces Left!', 'woocommerce');
+      $availability['availability'] = __($stock . ' Spaces Left!', 'wcmstextdomain');
     }
   }
   if ( !$_product->is_in_stock() ) {
-     $availability['availability'] = __('Sold Out!', 'woocommerce');
+     $availability['availability'] = __('Sold Out!', 'wcmstextdomain');
   }
   
   return $availability;
@@ -437,7 +468,60 @@ add_filter( 'woocommerce_endpoint_order-received_title', 'wcms_order_received_ti
 
 // Change 'order recieved' text and include printing link.
 function wcms_order_received_text( $str, $order ) {
-  $new_str = ' We have sent the registration details and receipt to your email, or you can <a href="javascript:window.print()">print this page</a>.';
+  $new_str = 'We have sent the receipt to your email, or you can <a href="javascript:window.print()">print this page</a>. We\'ll be in touch soon to confirm your registration!';
   return $new_str;
 }
 add_filter('woocommerce_thankyou_order_received_text', 'wcms_order_received_text', 10, 2 );
+
+/**
+ * Adds product filtering dropdown to the orders list
+ *
+ */
+function filter_orders_by_product_selection() {
+  global $typenow;
+  if ( 'shop_order' != $typenow ) {
+    return;
+  }
+  $args = array(
+    'posts_per_page' => - 1,
+    'orderby'        => 'title',
+    'order'          => 'asc',
+    'post_type'      => WOOCOMMERCE_PRODUCT,
+    'post_status'    => 'publish',
+  );
+  $all_posts = get_posts( $args );
+  $selected = empty( $_REQUEST[PRODUCT_FILTER_NAME] )?'':$_REQUEST[PRODUCT_FILTER_NAME];
+  ?><select name="<?php echo PRODUCT_FILTER_NAME ?>">
+    <option value="">
+      <?php esc_html_e( 'All series', 'wc-filter-orders' ); ?>
+    </option>
+    <?php foreach ( $all_posts as $product ) : ?>        
+      <option <?php selected($selected, $product->ID)?> value="<?php echo $product->ID ?>"><?php echo $product->post_title ?></option>
+    <?php endforeach; ?>
+  </select>
+  <?php
+}
+
+function attach_filter_orders_by_product(){
+  if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
+
+    add_action( 'restrict_manage_posts', 'filter_orders_by_product_selection' );
+    add_filter( 'posts_where', 'filter_orders_by_product' );
+  }
+}
+add_action( 'plugins_loaded', 'attach_filter_orders_by_product' );
+
+function filter_orders_by_product( $where ) {
+  if( is_search() ) {
+    global $wpdb;
+    $t_posts = $wpdb->posts;
+    $t_order_items = $wpdb->prefix . "woocommerce_order_items";  
+    $t_order_itemmeta = $wpdb->prefix . "woocommerce_order_itemmeta";
+
+    if ( isset( $_GET[PRODUCT_FILTER_NAME] ) && !empty( $_GET[PRODUCT_FILTER_NAME] ) ) {
+      $product = intval($_GET[PRODUCT_FILTER_NAME]);
+      $where .= " AND $product IN (SELECT $t_order_itemmeta.meta_value FROM $t_order_items LEFT JOIN $t_order_itemmeta on $t_order_itemmeta.order_item_id=$t_order_items.order_item_id WHERE $t_order_items.order_item_type='line_item' AND $t_order_itemmeta.meta_key='_product_id' AND $t_posts.ID=$t_order_items.order_id)";
+    }
+  }
+  return $where;
+}
