@@ -3,7 +3,7 @@
 }
 
 ol.meeting-schedule {
-	list-style: circle;
+  list-style: circle;
   line-height: 1.1;
 }
 
@@ -15,11 +15,11 @@ ol.meeting-schedule li::after { display: none !important; }
 
  /* The meeting details are wrapped .wc-item-meta where they are included as a line item on the order form */
 .wc-item-meta {
-	page-break-inside: avoid;
+  page-break-inside: avoid;
   border: thin dotted;
-	border-radius: 1ex;
-	padding: 1ex 1em;
-	font-size: 1em;
+  border-radius: 1ex;
+  padding: 1ex 1em;
+  font-size: 1em;
   margin-top: 1em;
   margin-right: 1em;
   margin-bottom: 1em;
@@ -61,17 +61,17 @@ ol.meeting-schedule li::after { display: none !important; }
    body.custom-background, 
   .site-content, 
   .woocommerce-order-received table th {
-		background: initial !important;
-		background-color: transparent !important;
-	}
+    background: initial !important;
+    background-color: transparent !important;
+  }
   .woocommerce-order-received ul.order_details, 
   .woocommerce-order-received .hentry,
   .woocommerce-order-received .site-main,
   .woocommerce-order-received .content-area {
-		margin: 0;
-	}
+    margin: 0;
+  }
   .woocommerce-order-received table td, 
   .woocommerce-order-received table th {
-		padding: 0 !important;
-	}
+    padding: 0 !important;
+  }
 }
