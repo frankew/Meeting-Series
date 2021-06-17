@@ -4,6 +4,11 @@ Source on Bitbucket | Download
 
 The plugin makes use of using standard WooCommerce and WordPress hooks, actions, and filters. It is opinionated, lightweight, and it should work with any theme.
 
+June 2021 
+
+ - Adds fields in the editor to choose a "Meeting Series Mentor"; linking to another page on the site that describes the person. 
+ - Refactor the term product->meeting in the code.
+
 <h2>Features</h2>
 
 Meeting Series for WooCommerce is opinionated. It assumes the site will be used only for selling registrations to meeting series. Though it is broad in scope, changes made by the plugin fall into four groups:
@@ -28,7 +33,7 @@ Specifically, the plugin makes the following changes:
  - Rename “Place Order” button to “Continue→”
  - Change product availability labels to “__ Space(s) Left” or “Sold Out :(”
  - Change order received text to “We have sent the registration details and receipt to your email, or you can print this page.”
- - Add print CSS for the Order Confimation Page to facilitate a tidy printed invoice.
+ - Add print CSS for the Order Confirmation Page to facilitate a tidy printed invoice.
 
 The plugin depends on WooCommerce and [metabox.io](https://metabox.io).  The plugin is open source and [free of copyright or -left encumberment](https://unlicense.org). Suggestions and contributions encouraged.
 
