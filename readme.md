@@ -6,8 +6,8 @@ The plugin makes use of using standard WooCommerce and WordPress hooks, actions,
 
 June 2021 
 
- - Adds fields in the editor to choose a "Meeting Series Mentor"; linking to another page on the site that describes the person. 
- - Refactor the term product->meeting in the code.
+ - Adds fields in the editor to choose a "Meeting Series Mentor"; linking to another page on the site that describes the person. If set, a "Led by..." section is will appear on the meeting page next to the Venue and Schedule information. 
+ - Source: Refactor the term product->meeting in the plugin to be parallel with other naming.
 
 <h2>Features</h2>
 
