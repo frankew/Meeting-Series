@@ -1,7 +1,5 @@
 ## A plug-in that turns WordPress and WooCommerce into a machine that sells registrations for meetings, classes, or sessions.
 
-Source on Bitbucket | Download
-
 The plugin makes use of using standard WooCommerce and WordPress hooks, actions, and filters. It is opinionated, lightweight, and it should work with any theme.
 
 June 2021 
